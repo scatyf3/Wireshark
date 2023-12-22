@@ -1,24 +1,21 @@
-arp: IP->MAC addr
 
-![here is my understanding of this pcap](image.png)
+## 1: Ethernet under HTTP GET
 
-here is the arp protocol
-
-```ARP
-
-Address Resolution Protocol (request)
-    Hardware type: Ethernet (1)
-    Protocol type: IPv4 (0x0800)
-    Hardware size: 6
-    Protocol size: 4
-    Opcode: request (1)
-    Sender MAC address: CnetTech_73:8d:ce (00:80:ad:73:8d:ce)
-    Sender IP address: 192.168.1.104
-    Target MAC address: 00:00:00_00:00:00 (00:00:00:00:00:00)
-    Target IP address: 192.168.1.117
+here is the Ethernet frame contains the http respond message
 
 ```
-## 1
+Ethernet II, Src: AmbitMic_a9:3d:68 (00:d0:59:a9:3d:68), Dst: LinksysG_da:af:73 (00:06:25:da:af:73)
+    Destination: LinksysG_da:af:73 (00:06:25:da:af:73)
+        Address: LinksysG_da:af:73 (00:06:25:da:af:73)
+        .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Source: AmbitMic_a9:3d:68 (00:d0:59:a9:3d:68)
+        Address: AmbitMic_a9:3d:68 (00:d0:59:a9:3d:68)
+        .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Type: IPv4 (0x0800)
+
+```
 
 > What is the 48-bit Ethernet address of your computer?
 
@@ -28,18 +25,9 @@ AmbitMic_a9:3d:68 (00:d0:59:a9:3d:68)
 
 > What is the 48-bit destination address in the Ethernet frame? Is this the Ethernetaddress of gaia.cs.umass.edu? (Hint: the answer is no). What device has this as its Ethernet address? [Note: this is an important question, and one that students sometimes get wrong. Re-read pages 468-469 in the text and make sure you understand the answer here.]
 
-- destination address in the Ethernet frame is ff:ff:ff:ff:ff:ff
+- destination address in the Ethernet frame is LinksysG_da:af:73 (00:06:25:da:af:73)
 - Is this the Ethernetaddress of gaia.cs.umass.edu? NO
-- device is switch
-    - not sure, what is the broadcast device in real life???
-
-```
-Ethernet II, Src: AmbitMic_a9:3d:68 (00:d0:59:a9:3d:68), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
-    Destination: Broadcast (ff:ff:ff:ff:ff:ff)
-    Source: AmbitMic_a9:3d:68 (00:d0:59:a9:3d:68)
-    Type: ARP (0x0806)
-
-```
+- device is router
 
 
 > Give the hexadecimal value for the two-byte Frame type field. What upper layer protocol does this correspond to?
@@ -54,7 +42,8 @@ here is G appear in the Ethernet frame?
 ![Alt text](image-1.png)
 
 
-## 2
+## 2: Ethernet under HTTP OK
+
 here is the Ethernet frame contains the http respond message
 
 ```
@@ -109,4 +98,140 @@ mdns.mcast.net (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet
 ? (239.255.255.250) at 1:0:5e:7f:ff:fa on en0 ifscope permanent [ethernet]
 ```
 
-- 172.23.xxx.xx
+
+## 4:More ARP
+
+arp: IP->MAC addr
+
+![here is my understanding of this pcap](image.png)
+
+here is the arp protocol
+
+```ARP
+
+Address Resolution Protocol (request)
+    Hardware type: Ethernet (1)
+    Protocol type: IPv4 (0x0800)
+    Hardware size: 6
+    Protocol size: 4
+    Opcode: request (1)
+    Sender MAC address: AmbitMic_a9:3d:68 (00:d0:59:a9:3d:68)
+    Sender IP address: 192.168.1.105
+    Target MAC address: 00:00:00_00:00:00 (00:00:00:00:00:00)
+    Target IP address: 192.168.1.1
+
+
+```
+
+> What are the hexadecimal values for the source and destination addresses in the Ethernet frame containing the ARP request message?
+
+```
+    Sender MAC address: AmbitMic_a9:3d:68 (00:d0:59:a9:3d:68)
+    Sender IP address: 192.168.1.105
+    Target MAC address: 00:00:00_00:00:00 (00:00:00:00:00:00)
+    Target IP address: 192.168.1.1
+```
+
+
+> Give the hexadecimal value for the two-byte Ethernet Frame type field. What upper layer protocol does this correspond to?
+
+```
+Protocol type: IPv4 (0x0800)
+```
+
+### ARP in theory
+>Download the ARP specification from ftp://ftp.rfc-editor.org/in-notes/std/std37.txt. A readable, detailed discussion of ARP is also at http://www.erg.abdn.ac.uk/users/gorry/course/inet-pages/arp.html.
+
+![here is ARP's format](image-4.png)
+
+
+a) How many bytes from the very beginning of the Ethernet frame does the ARP opcode field begin?
+
+48
+
+b) What is the value of the opcode field within the ARP-payload part of the Ethernet frame in which an ARP request is made?
+
+Opcode: request (1)
+
+c) Does the ARP message contain the IP address of the sender?
+
+yes
+
+d) Where in the ARP request does the “question” appear – the Ethernet address of the machine whose corresponding IP address is being queried?
+
+in the target part:
+
+```
+    Target MAC address: 00:00:00_00:00:00 (00:00:00:00:00:00)
+    Target IP address: 192.168.1.1
+```
+
+### More ARP in real life
+
+Now find the ARP reply that was sent in response to the ARP request.
+
+```
+
+Address Resolution Protocol (reply)
+    Hardware type: Ethernet (1)
+    Protocol type: IPv4 (0x0800)
+    Hardware size: 6
+    Protocol size: 4
+    Opcode: reply (2)
+    Sender MAC address: LinksysG_da:af:73 (00:06:25:da:af:73)
+    Sender IP address: 192.168.1.1
+    Target MAC address: AmbitMic_a9:3d:68 (00:d0:59:a9:3d:68)
+    Target IP address: 192.168.1.105
+
+```
+
+a) How many bytes from the very beginning of the Ethernet frame does the ARP opcode field begin?
+
+48
+
+b) What is the value of the opcode field within the ARP-payload part of the Ethernet frame in which an ARP response is made?
+
+Opcode: reply (2)
+
+c) Where in the ARP message does the “answer” to the earlier ARP request appear – the IP address of the machine having the Ethernet address whose corresponding IP address is being queried?
+
+“answer”are in :
+
+```
+    Sender MAC address: LinksysG_da:af:73 (00:06:25:da:af:73)
+    Sender IP address: 192.168.1.1
+```
+
+which means we known the 192.168.1.1's MAC address is 00:06:25:da:af:73
+
+
+d)What are the hexadecimal values for the source and destination addresses in the Ethernet frame containing the ARP reply message? 
+
+```
+   Sender MAC address: LinksysG_da:af:73 (00:06:25:da:af:73)
+    Sender IP address: 192.168.1.1
+    Target MAC address: AmbitMic_a9:3d:68 (00:d0:59:a9:3d:68)
+    Target IP address: 192.168.1.105
+```
+
+
+> Open the ethernet-ethereal-trace-1 trace file in http://gaia.cs.umass.edu/wireshark-labs/wireshark-traces.zip. The first and second ARP packets in this trace correspond to an ARP request sent by the computer running Wireshark, and the ARP reply sent to the computer running Wireshark by the computer with the ARP-requested Ethernet address. But there is yet another computer on this network, as indicated by packet 6 – another ARP request. Why is there no ARP reply (sent in response to the ARP request in packet 6) in the packet trace?
+
+here is packet 6
+
+```ARP
+
+Address Resolution Protocol (request)
+    Hardware type: Ethernet (1)
+    Protocol type: IPv4 (0x0800)
+    Hardware size: 6
+    Protocol size: 4
+    Opcode: request (1)
+    Sender MAC address: CnetTech_73:8d:ce (00:80:ad:73:8d:ce)
+    Sender IP address: 192.168.1.104
+    Target MAC address: 00:00:00_00:00:00 (00:00:00:00:00:00)
+    Target IP address: 192.168.1.117
+
+```
+
+the reason maybe there is no 192.168.1.117 in this subnet
