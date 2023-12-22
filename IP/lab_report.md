@@ -105,3 +105,103 @@ Time to Live: 244
 
 - Identification change, because we need to identify different packets
 - TTL didn't change, because all packet were reach their max time limit then TTL-exceeded
+
+## 4 Fragmentation
+
+here is an packet with size greater than 2000
+
+```
+Internet Protocol Version 4, Src: 192.168.1.102, Dst: 128.59.23.100
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+    Total Length: 568
+    Identification: 0x3323 (13091)
+    000. .... = Flags: 0x0
+    ...0 0001 0111 0010 = Fragment Offset: 2960
+    Time to Live: 1
+    Protocol: ICMP (1)
+    Header Checksum: 0x2983 [validation disabled]
+    [Header checksum status: Unverified]
+    Source Address: 192.168.1.102
+    Destination Address: 128.59.23.100
+    [3 IPv4 Fragments (3508 bytes): #216(1480), #217(1480), #218(548)]
+
+```
+
+we can see from the image that packet 216, 217 are reassemble in 218
+
+![Alt text](image-4.png)
+
+10. Find the first ICMP Echo Request message that was sent by your computer after you changed the Packet Size in pingplotter to be 2000. Has that message been fragmented across more than one IP datagram?
+
+yes 
+
+
+11. Print out the first fragment of the fragmented IP datagram. What information in the IP header indicates that the datagram been fragmented? What information in the IP header indicates whether this is the first fragment versus a latter fragment? How long is this IP datagram?
+
+It's flag `001. .... = Flags: 0x1, More fragments` indicates that the datagram been fragmented
+Fragment Offset `...0 0000 0000 0000 = Fragment Offset: 0` indicate that it is first fragment 
+
+```
+Internet Protocol Version 4, Src: 192.168.1.102, Dst: 128.59.23.100
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+    Total Length: 1500
+    Identification: 0x3323 (13091)
+    001. .... = Flags: 0x1, More fragments
+    ...0 0000 0000 0000 = Fragment Offset: 0
+    Time to Live: 1
+    Protocol: ICMP (1)
+    Header Checksum: 0x0751 [validation disabled]
+    [Header checksum status: Unverified]
+    Source Address: 192.168.1.102
+    Destination Address: 128.59.23.100
+    [Reassembled IPv4 in frame: 218]
+
+```
+
+
+
+12. Print out the second fragment of the fragmented IP datagram. What information in the IP header indicates that this is not the first datagram fragment? Are the more fragments? How can you tell?
+
+`...0 0000 1011 1001 = Fragment Offset: 1480`->it is not the first fragments
+`001. .... = Flags: 0x1, More fragments`->there will be more fragments
+    
+
+```
+Internet Protocol Version 4, Src: 192.168.1.102, Dst: 128.59.23.100
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+    Total Length: 1500
+    Identification: 0x3323 (13091)
+    001. .... = Flags: 0x1, More fragments
+    ...0 0000 1011 1001 = Fragment Offset: 1480
+    Time to Live: 1
+    Protocol: ICMP (1)
+    Header Checksum: 0x0698 [validation disabled]
+    [Header checksum status: Unverified]
+    Source Address: 192.168.1.102
+    Destination Address: 128.59.23.100
+    [Reassembled IPv4 in frame: 218]
+
+```
+
+13. What fields change in the IP header between the first and second fragment?
+
+Fragment Offset
+
+
+Now find the first ICMP Echo Request message that was sent by your computer after you
+changed the Packet Size in pingplotter to be 3500.
+
+
+14. How many fragments were created from the original datagram? 
+
+3
+
+15. What fields change in the IP header among the fragments?
+
+Fragment Offset
