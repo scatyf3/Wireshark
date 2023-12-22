@@ -235,3 +235,25 @@ Address Resolution Protocol (request)
 ```
 
 the reason maybe there is no 192.168.1.117 in this subnet
+
+## EXTRA CREDIT 
+
+
+EX-1. The arp command:
+arp -s InetAddr EtherAddr
+allows you to manually add an entry to the ARP cache that resolves the IP address InetAddr to the physical address EtherAddr. What would happen if, when you manually added an entry, you entered the correct IP address, but the wrong Ethernet address for that remote interface?
+
+your packet will be send to false Ethernet address
+
+EX-2. What is the default amount of time that an entry remains in your ARP cache before being removed. You can determine this empirically (by monitoring the cache contents) or by looking this up in your operation system documentation. Indicate how/where you determined this value.
+
+default ARP cache time for MACOS is 20min, according to [this post](https://apple.stackexchange.com/questions/342902/does-anybody-know-what-the-arp-cache-timeout-is-for-macos-sierra)
+
+and if you type `man arp` on your terminal, you can see this:
+
+```sh
+HISTORY
+     The arp utility appeared in 4.3BSD.
+```
+
+and we can verify the post by check [BSD's manual](https://man.openbsd.org/)
