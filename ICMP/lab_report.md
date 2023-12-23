@@ -1,3 +1,5 @@
+more [ICMP explain](https://xiaolincoding.com/network/4_ip/ping.html)
+
 ## ICMP and Ping
 
 here is my result when ping `bnu.edu.cn`
